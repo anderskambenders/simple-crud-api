@@ -5,8 +5,7 @@ import { UsersModel } from './model/usersModel';
 import { EOL } from 'os';
 import 'dotenv/config';
 
-const userModel = new UsersModel();
-
+export const userModel = new UsersModel();
 const port = process.env.PORT! || 5000;
 const host = 'localhost';
 
@@ -22,9 +21,11 @@ export const server = createServer((request: IncomingMessage, response: ServerRe
   }
 })
 
-server.listen(port, () => {
-  console.log(`Server is running on http://${host}:${port}${EOL}`);
-})
+if (!process.argv.slice(2) || process.argv.slice(2)[0] !== '--multi') {
+  server.listen(port, () => {
+    console.log(`Server is running on http://${host}:${port}${EOL}`);
+  })
+}
 server.on('error', (error) => {
   console.log('Error http server', error);
 });

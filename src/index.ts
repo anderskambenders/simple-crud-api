@@ -1,19 +1,24 @@
-
 import 'dotenv/config';
-import { createServer } from 'http';
+import { createServer, IncomingMessage, request, ServerResponse } from 'http';
+import { handleRequest } from './controller/requestHandler';
+import { UsersModel } from './model/usersModel';
 import { EOL } from 'os';
 
 
 export const port = process.env.PORT! || 5000;
 const host = 'localhost';
 
-export const server = createServer(() => {
+export const server = createServer((request: IncomingMessage, response: ServerResponse) => {
+    const { url, method } = request;
+    try {
+      const urlArray = (url as string).split('/').filter((item) => item);
+      const handle = handleRequest(method, urlArray, url);
+      const userId = urlArray[2];
+    } catch (error) {
+      response.end(`Internal Server Error`)
+    }
 })
 
-if (!process.argv.slice(2) || process.argv.slice(2)[0] !== '--multi') {
   server.listen(port, () => {
-    process.stdout.write(
-      `Server is running on http://${host}:${port}${EOL}`
-    )
+    console.log(`Server is running on http://${host}:${port}${EOL}`);
   })
-}

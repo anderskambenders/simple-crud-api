@@ -1,8 +1,9 @@
 import getUsers from "./getUsers";
+import postUser from "./postUser";
 
 const endpoints = {
   'GET': getUsers,
-  'POST': PostUser,
+  'POST': postUser,
   'PUT': PutUser,
   'DELETE': DeleteUser,
 };

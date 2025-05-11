@@ -10,7 +10,7 @@ export class UsersModel {
   }
 
   public getAllUsers = () => {
-    return this.users.entries();
+    return Object.fromEntries(this.users);
   };
 
   public getUser = (id: string) => {

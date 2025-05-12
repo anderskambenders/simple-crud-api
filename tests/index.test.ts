@@ -78,6 +78,76 @@ const anotherUser = {
       );
     });
   });
+  describe('second pack of tests', () => {
+    let id = '';
+    const endpoint = '/api/users';
+    const wrongId = '/invalid_url';
+    it(`Get should return 404 if user not found"`, async () => {
+      const { body, statusCode } = await supertest(server).get('/invalid_url');
+      expect(statusCode).toEqual(404);
+    });
+    it('Should return status code 400 about invalid body', async () => {
+      const { body, statusCode } = await supertest(server)
+        .post(endpoint)
+        .send({ ...user, hobbies: null });
+      expect(statusCode).toEqual(400);
+    });
+    it(`Should return message "UserId invalid_uuid is invalid."`, async () => {
+      const { body, statusCode } = await supertest(server).get(
+        `${endpoint}/invalid_uuid`,
+      );
+      expect(statusCode).toEqual(400);
+      expect(body).toEqual("UserId invalid_uuid is invalid.");
+    });
+    it(`Should return message "User with id doesn't exist."`, async () => {
+      const res = await supertest(server).post(endpoint).send(user);
+      id = res.body.id;
+      await supertest(server).delete(`${endpoint}/${id}`);
+      const { body, statusCode } = await supertest(server).get(
+        `${endpoint}/${id}`,
+      );
+      expect(statusCode).toEqual(404);
+      expect(body).toEqual(`User with id ${id} doesn't exist.`);
+    });
+  });
+  describe('third tests pack', () => {
+    let id = '';
+    const endpoint = '/api/users';
+    it('Should return 3 users', async () => {
+      const promises : any[] = [];
+      for (let i = 0; i < 2; i += 1) {
+        promises.push(
+          supertest(server)
+            .post(endpoint)
+            .send({ ...user, age: user.age + i }),
+        );
+      }
+      await Promise.all(promises);
+      const { body } = await supertest(server).get(endpoint);
+      expect(body.length).toEqual(3);
+      id = body[1].id;
+    });
+    it('Should get updated user with selected id', async () => {
+      const response = await supertest(server).get(`${endpoint}/${id}`);
+      const updatedUser = { ...response.body, hobbies: [] };
+      delete updatedUser.id;
+      const { body, statusCode } = await supertest(server)
+        .put(`${endpoint}/${id}`)
+        .send(updatedUser);
+      expect(statusCode).toEqual(200);
+      expect(JSON.stringify(body)).toEqual(
+        JSON.stringify({ ...updatedUser, id }),
+      );
+    });
+    it('Should return "User with id doesnt exist."', async () => {
+      await supertest(server).delete(`${endpoint}/${id}`);
+      const { body, statusCode } = await supertest(server).get(
+        `${endpoint}/${id}`,
+      );
+      expect(statusCode).toEqual(404);
+      expect(body).toEqual(`User with id ${id} doesn't exist.`);
+    });
+  });
   afterAll(() => {
     server.close();
   });

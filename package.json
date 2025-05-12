@@ -6,7 +6,8 @@
   "scripts": {
     "start:dev": "nodemon ./src/index.ts",
     "start:prod": "webpack && node ./dist/index_bundle.cjs",
-    "start:multi": "nodemon ./src/index.ts --multi"
+    "start:multi": "nodemon ./src/index.ts --multi",
+    "test": "npx jest --noStackTrace --runInBand"
   },
   "repository": {
     "type": "git",

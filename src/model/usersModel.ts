@@ -1,4 +1,3 @@
-
 import { v4 } from 'uuid';
 import { User } from '../types/types';
 
@@ -10,7 +9,12 @@ export class UsersModel {
   }
 
   public getAllUsers = () => {
-    return Object.fromEntries(this.users);
+    const res: Array<{}> = [];
+    this.users.forEach((user, id) => {
+      const userObj = { id, user };
+      res.push(userObj);
+    })
+    return res;
   };
 
   public getUser = (id: string) => {

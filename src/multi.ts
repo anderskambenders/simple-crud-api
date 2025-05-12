@@ -1,9 +1,8 @@
 import { cpus } from 'os';
 import cluster from 'cluster';
 import { createServer, IncomingMessage, request, ServerResponse } from 'http';
-import { server } from '.';
 import 'dotenv/config';
-
+import { server } from '.';
 
 const port = Number(process.env.PORT! || 5000);
 const coresCount = cpus().length;
